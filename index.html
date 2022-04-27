@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Group Chat</title>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <header>
+        <h2  style=" font-family: 'Montserrat', sans-serif;">GROUP CHAT</h2>
+      </header>
+  
+      <div id="chat">
+        <!-- messages will display here -->
+        <ul id="messages"></ul>
+  
+        <!-- form to send message -->
+        <form id="message-form">
+          <input id="message-input" type="text" />
+          <button id="message-btn" type="submit">Send</button><a href="https://meet.google.com/uze-jyxv-otd" target="_blank" rel="noopener noreferrer"><img style="width: 3%; height: 3%;" src="vdcl.png" alt=""></a>
+        </form>
+      </div>
+    <!-- scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+<script>
+var firebaseConfig = {
+apiKey: "AIzaSyCJsMoux5RetoUD7YZKagdz_cWoMc8xn2g",
+authDomain: "group-ch-5605a.firebaseapp.com",
+databaseURL: "https://group-ch-5605a-default-rtdb.firebaseio.com",
+projectId: "group-ch-5605a",
+storageBucket: "group-ch-5605a.appspot.com",
+messagingSenderId: "337140403035",
+appId: "1:337140403035:web:7a24e0932c78073d1da87e"
+};
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+const username = prompt("Please Tell Us Your Name");
+
+document.getElementById("message-form").addEventListener("submit", sendMessage);
+
+function sendMessage(e) {
+  e.preventDefault();
+
+  // get values to be submitted
+  const timestamp = Date.now();
+  const messageInput = document.getElementById("message-input");
+  const message = messageInput.value;
+
+  // clear the input box
+  messageInput.value = "";
+
+  //auto scroll to bottom
+  document
+    .getElementById("messages")
+    .scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+
+  // create db collection and send in the data
+  db.ref("messages/" + timestamp).set({
+    username,
+    message,
+  });
+}
+
+const fetchChat = db.ref("messages/");
+
+fetchChat.on("child_added", function (snapshot) {
+  const messages = snapshot.val();
+  const message = `<li class=${
+    username === messages.username ? "sent" : "receive"
+  }><span>${messages.username}: </span>${messages.message}</li>`;
+  // append the message on the page
+  document.getElementById("messages").innerHTML += message;
+});
+
+</script>
+<style>
+  body {
+background-image: url(240_F_199798806_PAFfWGapie6Mk8igqKHbhIIa9LwQcvQr.jpg);
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    text-align: center;
+}
+
+#messages{
+    padding-bottom: 30%;  font-family: 'Varela Round', sans-serif;
+}
+
+li {
+    list-style-type: none;
+    margin-bottom: 10px;
+    background-color: #00ffff;
+    padding: 5px;
+    border-radius: 10px;
+    color: rgb(255, 0, 0);
+    width: 50%;  font-family: 'Varela Round', sans-serif;
+}
+
+li span {
+    font-style: italic;
+    font-weight: bolder;
+    color: #ff0000;  font-family: 'Varela Round', sans-serif;
+}
+
+#chat {
+    width: 80%;
+    margin: auto;
+}
+
+#message-form {
+    text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  background-color: aquamarine;  font-family: 'Varela Round', sans-serif;
+}
+
+input {
+    width: 70%;
+    height: 30px;
+}
+
+button {
+    width: 25%;
+    height: 38px;
+}
+
+.sent {
+    text-align: right;
+    background-color: #09ff00;  font-family: 'Varela Round', sans-serif;
+    margin-left: 50%;
+}
+
+.sent span {
+    margin-left: 5px;
+    font-family: 'Varela Round', sans-serif;
+    color: #ff0000;
+}
+#message-btn {
+  font-family: 'Varela Round', sans-serif;
+}
+h2{
+  border-radius: 25px;
+  background: #eeff00;
+  padding: 20px; 
+  width: 100%;
+
+}
+
+</style>
+  </body>
+</html>
